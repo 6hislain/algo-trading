@@ -1,0 +1,29 @@
+//@version=5
+indicator("3 Moving Average", shorttitle="3 MA", overlay=true)
+
+// Define input for moving average periods
+ma1_length = input.int(20, title="MA1 Period")
+ma2_length = input.int(50, title="MA2 Period")
+ma3_length = input.int(200, title="MA3 Period")
+
+// Calculate moving averages
+ma1 = ta.ema(close, ma1_length)
+ma2 = ta.ema(close, ma2_length)
+ma3 = ta.ema(close, ma3_length)
+
+// Plot the moving averages on the chart
+plot(ma1, color=color.blue, title="MA1")
+plot(ma2, color=color.green, title="MA2")
+plot(ma3, color=color.red, title="MA3")
+
+// Generate buy and sell signals
+ma1_crosses_ma2 = ta.crossover(ma1, ma2)
+ma2_crosses_ma1 = ta.crossover(ma2, ma1)
+
+// Define the conditions for buy and sell signals
+buy_condition = ma1_crosses_ma2 and close < ma3
+sell_condition = ma2_crosses_ma1 and close > ma3
+
+// Plot arrows on the chart for buy and sell signals with larger size
+plotshape(buy_condition, style=shape.triangleup, location=location.belowbar, color=color.green, title="Buy Signal", size=size.small)
+plotshape(sell_condition, style=shape.triangledown, location=location.abovebar, color=color.red, title="Sell Signal", size=size.small)
